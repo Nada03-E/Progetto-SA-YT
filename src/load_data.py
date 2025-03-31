@@ -18,7 +18,7 @@ def load_data():
 
     df = YT[['Comment', 'Sentiment']]
     df = df.rename(columns={"Comment": "text", "Sentiment": "sentiment"})
-
+    df = df.dropna() 
     df.reset_index(drop=True, inplace=True)
     
 

@@ -5,7 +5,7 @@ from src import config  #streamlit run UI.py   python -m streamlit run UI.py
 import streamlit as st
 import pickle
 
-print(f"Looking for model at: {config.MODELS_PATH}random_forest.plk")
+print(f"Looking for model at: {config.MODELS_PATH}random_forest.pkl")
 
 #load the model and vectorizer
 with open(f"{config.MODELS_PATH}random_forest.pkl", 'rb') as file:
@@ -24,7 +24,9 @@ if st.button("Predict"):
         #trasform imput and predict
         X=vectorizer.transform([user_input])
         prediction = model.predict(X)[0]
-        if prediction=='positive':
-            st.success(f"Predicted class:{prediction}")
-        elif prediction== 'negative':
-            st.warning(f"Predicted class:{prediction}")
+        if prediction== 1:
+            st.success(f"Predicted class: Positive")
+        elif prediction == 2:
+            st.warning(f"Predicted class: Neutral")
+        elif prediction== 0:
+            st.warning(f"Predicted class: Nergative")

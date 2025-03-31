@@ -14,6 +14,10 @@ import sqlite3
 sys.path.append(os.path.abspath('..'))  # Adds the parent directory to sys.path
 from src import config
 
+from sklearn.experimental import enable_iterative_imputer  
+from sklearn.impute import IterativeImputer
+from sklearn.model_selection import cross_val_score
+
 def preprocess_data():
 
 
@@ -27,7 +31,7 @@ def preprocess_data():
     lemmatizer = WordNetLemmatizer()
     stop_words = set(stopwords.words('english')).union(STOPWORDS)
 
-    def preprocess_tweet(text):
+    def preprocess_comments(text):
         """Preprocesses a tweet by performing various cleaning and normalization steps."""
         if not isinstance(text, str) or text.strip() == "":
             return ""
@@ -59,10 +63,23 @@ def preprocess_data():
         # Lemmatize words
         words = [lemmatizer.lemmatize(word) for word in words]
 
+        # 📌 2️⃣ Pulizia e Preparazione dei Dati, ControlloS dei Missing
+        # Rimuove righe con valori mancanti "essnendo testuali fare imputation diventa complesso"
+        df['sentiment'] = df['sentiment'].map({'positive': 1, 'negative': 0,'neutral': 2})  # Converte sentiment in numerico
+        df['sentiment'] = df['sentiment'].apply(lambda x: 0 if x <= 0.5 else (1 if x <= 1.5 else 2))
+
         # Reconstruct cleaned text
         return " ".join(words)
 
-    
+    def imputation_missing_data():
+        # Inizializziamo l'IterativeImputer (MICE)
+        imputer = IterativeImputer(random_state=42)
+
+        # Applicare l'imputer solo sulla colonna 'sentiment' che ha i valori mancanti
+
+        df['sentiment'] = imputer.fit_transform(df[['sentiment']])
+        return df
+
 
     # Connect to the database
     conn = sqlite3.connect(config.DATABASE_PATH)
@@ -71,8 +88,10 @@ def preprocess_data():
     df = pd.read_sql_query(f"SELECT * FROM {config.RAW_TABLE}", conn)
 
     # Apply preprocessing
-    df['cleaned_text'] = df['text'].apply(preprocess_tweet)
-    df['sentiment'] = df['sentiment'].apply(lambda x : x.lower())
+    df['cleaned_text'] = df['text'].apply(preprocess_comments)
+    if df.isnull().sum().sum() != 0:
+        df=df.apply(imputation_missing_data)
+    
     df.to_sql(config.PROCESSED_TABLE, conn, if_exists='replace', index=False)
 
     # Commit and close the connection

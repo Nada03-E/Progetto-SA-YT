@@ -32,3 +32,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+model_path = f"{config.MODELS_PATH}random_forest.pkl"
+vectorizer_path = f"{config.MODELS_PATH}vectorizer.pkl"
+
+# Controllo se i file esistono
+if not os.path.exists(model_path):
+    print(f"❌ ERRORE: Il file del modello non esiste! Controlla il percorso: {model_path}")
+if not os.path.exists(vectorizer_path):
+    print(f"❌ ERRORE: Il file del vettorizzatore non esiste! Controlla il percorso: {vectorizer_path}")
