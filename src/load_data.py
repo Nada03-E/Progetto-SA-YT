@@ -10,21 +10,15 @@ import logging
 # Set up logging
 
 def load_data():
-    logging.info('Opening Excel Files...')
-    e1 = pd.read_excel(os.path.join(config.RAW_DATA_PATH,
-                    'earth_day_tweets_sentiment_50k_(1).xlsx'))
-    e2 = pd.read_excel(os.path.join(config.RAW_DATA_PATH,
-                    'earth_day_tweets_sentiment_50k_(2).xlsx'))
-    fifa = pd.read_excel(os.path.join(config.RAW_DATA_PATH,
-                        'fifa_world_cup_2022_tweets_sentiment_22k.xlsx'))
-    generic = pd.read_excel(os.path.join(config.RAW_DATA_PATH, 'generic_27k.xlsx'))
+    logging.info('Opening Excel File...')
+    YT = pd.read_csv(os.path.join(config.RAW_DATA_PATH,
+                    'YoutubeCommentsDataSet.csv'))
+    
 
-    e1 = e1[['text', 'sentiment']]
-    e2 = e2[['text', 'sentiment']]
-    fifa = fifa[['Tweet', 'Sentiment']]
-    fifa.columns = ['text', 'sentiment']
-    generic = generic[['text', 'sentiment']]
-    df = pd.concat([e1, e2, fifa, generic])
+
+    df = YT[['Comment', 'Sentiment']]
+    df = df.rename(columns={"Comment": "text", "Sentiment": "sentiment"})
+
     df.reset_index(drop=True, inplace=True)
     
 

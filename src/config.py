@@ -10,10 +10,10 @@ RAW_DATA_PATH = os.path.join(BASE_DIR, "../data/raw/")
 DATABASE_PATH = os.path.join(BASE_DIR, "../database/sentiment.db")
 
 # Preprocessed Data Table Name
-PROCESSED_TABLE = "processed_tweets"
+PROCESSED_TABLE = "processed_comments"
 
 # Raw Data Table Name
-RAW_TABLE = "raw_tweets"
+RAW_TABLE = "raw_comments"
 
 # Predictions Table Name
 PREDICTIONS_TABLE = "predictions"
